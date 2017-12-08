@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.util.Log;
+import android.os.HandlerThread;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private MyThread myThread2;
     private Handler mHandler;
     private int nMessageCount = 0;
+    private HandlerThread myThread3;
+    private Handler mHandler3;
 
     class myRunnable implements Runnable{
         @Override
@@ -89,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 ButtonCount++;
                 Message msg = new Message();
                 mHandler.sendMessage(msg);
+                mHandler3.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "get Message for Thread3 "+nMessageCount);
+                        nMessageCount++;
+                    }
+                });
             }
         });
 
@@ -110,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        myThread3 = new HandlerThread("MessageTestThread3");
+        myThread3.start();
+
+        mHandler3 = new Handler(myThread3.getLooper());
+
     }
 
     @Override
